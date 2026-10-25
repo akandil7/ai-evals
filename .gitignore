@@ -1,0 +1,5 @@
+.env
+.env.*
+experiments/results.csv
+__pycache__/
+.DS_Store
