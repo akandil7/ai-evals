@@ -83,7 +83,7 @@ def main():
             for effort in config["efforts"]:
                 rows = []
                 for case in cases:
-                    answer, tin, tout, lat = ask(client, model, effort, task, case, config["max_tokens"])
+                    answer, tin, tout, lat = ask(client, model, effort, task, case, config.get("max_tokens", 4000))
                     cost = (tin * price["input_per_mtok"] + tout * price["output_per_mtok"]) / 1e6
                     ok = grade(answer, case, task)
                     rows.append((ok, lat, cost))
