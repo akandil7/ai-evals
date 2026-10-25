@@ -1,0 +1,12 @@
+{"id": "t01", "input": "Hi, I was charged twice for my March subscription and now my card shows a pending hold. Can someone refund the duplicate?", "expected": "billing"}
+{"id": "t02", "input": "The export button spins forever on the reports page. Tried Chrome and Safari.", "expected": "bug"}
+{"id": "t03", "input": "It would be great if dashboards could be scheduled to email every Monday.", "expected": "feature_request"}
+{"id": "t04", "input": "I got locked out after changing my phone. I don't get the verification code anymore.", "expected": "account_access"}
+{"id": "t05", "input": "I was double charged AND the invoice page crashes when I try to download it.", "expected": "billing"}
+{"id": "t06", "input": "How do I add a teammate to my workspace?", "expected": "how_to"}
+{"id": "t07", "input": "app broken!!! nothing loads since this morning", "expected": "bug"}
+{"id": "t08", "input": "Do you have a office in Berlin? Asking for a friend.", "expected": "other"}
+{"id": "t09", "input": "Can you add dark mode? My eyes hurt at night.", "expected": "feature_request"}
+{"id": "t10", "input": "Forgot my password and the reset email never arrives.", "expected": "account_access"}
+{"id": "t11", "input": "Where can I find my past invoices so I can send them to accounting?", "expected": "how_to"}
+{"id": "t12", "input": "Why was my plan upgraded to Pro without me asking? Please cancel and refund.", "expected": "billing"}

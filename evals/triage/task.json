@@ -1,0 +1,8 @@
+{
+  "name": "triage",
+  "description": "Classify an inbound support ticket into exactly one category.",
+  "instructions": "You triage customer support tickets. Choose exactly one label. If a ticket involves both a money problem and a bug, choose billing. Reply with only the label, nothing else.",
+  "labels": ["billing", "bug", "feature_request", "how_to", "account_access", "other"],
+  "grader": "exact_match",
+  "bar": {"min_accuracy": 0.90, "max_cost_per_case_usd": 0.002, "max_p95_latency_s": 5}
+}

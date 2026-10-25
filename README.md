@@ -1,23 +1,36 @@
-# AI Product Manager Portfolio
+# ai-evals
 
-Hands-on case studies in choosing the right AI model, effort level and parameters, with measured quality, cost and latency tradeoffs.
+A small, reusable harness for testing which Claude model and effort level is good enough for a task, measured on quality, cost and latency.
 
-## Start here
-1. Read [the guide](guide/01-choosing-model-effort-parameters.md).
-2. Work through the case studies in order, replacing each TEMPLATE with your own results:
-   - [01 Model choice](case-studies/01-model-choice/README.md)
-   - [02 Effort sweep](case-studies/02-effort-sweep/README.md)
-   - [03 Cost per task](case-studies/03-cost-per-task/README.md)
-3. Use [`experiments/effort_sweep.py`](experiments/effort_sweep.py) to generate your data.
+## Layout
+```
+evals/<task>/task.json     what is tested: instructions, labels, grader, pass bar
+evals/<task>/cases.jsonl   test cases: id, input, expected answer
+configs/default.json       models, effort levels, prices
+runner.py                  runs an eval across models x efforts and prints a summary
+results/                   CSV outputs of each run (git-ignored)
+docs/                      notes, starting with how to choose model, effort and parameters
+```
 
-## What this portfolio shows
-- Decisions made from evidence: eval sets, hypotheses written before testing, explicit tradeoffs.
-- Cost thinking at the level of cost per completed task.
-- Product judgment: when a cheaper model or lower effort is the right call.
+## Run
+```bash
+pip install anthropic
+python runner.py evals/triage --limit 3    # cheap smoke test first
+python runner.py evals/triage
+```
+Credentials come from your environment. Never commit keys. Each run costs real money.
 
-## Ground rules
-- Use synthetic or anonymized data only. No customer or employer-confidential information, and no credentials in the repo.
-- Treat the guide's model names and prices as a snapshot and re-verify them.
+## Add a new eval
+1. Copy `evals/triage` to `evals/<new-task>`.
+2. Edit `task.json`: instructions, labels and the bar (min accuracy, max cost per case, max p95 latency).
+3. Write your cases in `cases.jsonl`. Write the expected answers yourself, **before** running any model.
+4. Run it.
 
-## About me
-[Your name, role, and a one-line pitch.]
+## Roadmap
+1. Exact-match grading on classification tasks (done).
+2. LLM-as-judge for open-ended outputs: add a grader function in `runner.py`'s `GRADERS` that scores an answer against a rubric, and spot-check its verdicts against your own.
+3. Prompt-variant comparison and batch runs.
+
+## Rules
+- Synthetic or anonymized data only: no customer or employer-confidential content.
+- Model names and prices change. Re-check `configs/default.json`.

@@ -1,0 +1,9 @@
+{
+  "max_tokens": 4000,
+  "efforts": ["low", "medium"],
+  "models": {
+    "claude-haiku-5-5": {"input_per_mtok": 0.10, "output_per_mtok": 0.50},
+    "claude-sonnet-5-5": {"input_per_mtok": 2.00, "output_per_mtok": 10.00},
+    "claude-opus-5-5": {"input_per_mtok": 4.00, "output_per_mtok": 20.00}
+  }
+}
