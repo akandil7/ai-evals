@@ -34,7 +34,11 @@ def exact_match(answer, case, task):
 GRADERS = {"exact_match": exact_match}
 
 
-def ask(client, model, effort, task, case, max_tokens):
+# Output cap, including thinking tokens. Override with "max_tokens" in the config.
+DEFAULT_MAX_TOKENS = 4000
+
+
+def ask(client, model, effort, task, case, max_tokens=DEFAULT_MAX_TOKENS):
     labels = ", ".join(task["labels"])
     start = time.time()
     resp = client.messages.create(
@@ -83,7 +87,7 @@ def main():
             for effort in config["efforts"]:
                 rows = []
                 for case in cases:
-                    answer, tin, tout, lat = ask(client, model, effort, task, case, config.get("max_tokens", 4000))
+                    answer, tin, tout, lat = ask(client, model, effort, task, case, config.get("max_tokens", DEFAULT_MAX_TOKENS))
                     cost = (tin * price["input_per_mtok"] + tout * price["output_per_mtok"]) / 1e6
                     ok = grade(answer, case, task)
                     rows.append((ok, lat, cost))

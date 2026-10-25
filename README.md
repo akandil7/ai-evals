@@ -30,7 +30,7 @@ python runner.py evals/triage
 
 ### Add a new eval
 1. Copy `evals/triage` to `evals/<new-task>`.
-2. Edit `task.json`: instructions, labels and the bar (min accuracy, max cost per case, max p95 latency).
+2. Edit `task.json`: instructions, labels and the bar (min accuracy, max cost per case, max p95 latency). Explain each number in `bar_rationale`; see [Setting the pass bar](docs/choosing-model-effort-parameters.md#7-setting-the-pass-bar).
 3. Write your cases in `cases.jsonl`. Write the expected answers yourself, **before** running any model.
 4. Run it.
 

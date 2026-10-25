@@ -4,5 +4,11 @@
   "instructions": "You triage customer support tickets. Choose exactly one label. If a ticket involves both a money problem and a bug, choose billing. Reply with only the label, nothing else.",
   "labels": ["billing", "bug", "feature_request", "how_to", "account_access", "other"],
   "grader": "exact_match",
-  "bar": {"min_accuracy": 0.90, "max_cost_per_case_usd": 0.002, "max_p95_latency_s": 5}
+  "bar": {"min_accuracy": 0.90, "max_cost_per_case_usd": 0.002, "max_p95_latency_s": 5},
+  "bar_rationale": {
+    "status": "Assumed starting values, not yet calibrated against real ticket volume or human baseline. See docs/choosing-model-effort-parameters.md section 7.",
+    "min_accuracy": "A misrouted ticket is cheap to recover (an agent re-queues it), so ~1 in 10 wrong is tolerable. Calibrate against human triager agreement; the model should not need to beat humans by much.",
+    "max_cost_per_case_usd": "Triage runs on every ticket. Assumed 100k tickets/month x $0.002 = ~$200/month ceiling. Haiku runs ~$0.0001/ticket, so this bar mainly decides whether Sonnet/Opus are affordable.",
+    "max_p95_latency_s": "Routing happens before a human picks the ticket up, so nobody waits on it live, but 5s keeps the queue near real time. Tighten if a customer-facing auto-reply depends on the label."
+  }
 }
