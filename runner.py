@@ -34,11 +34,7 @@ def exact_match(answer, case, task):
 GRADERS = {"exact_match": exact_match}
 
 
-# Output cap, including thinking tokens. Override with "max_tokens" in the config.
-DEFAULT_MAX_TOKENS = 4000
-
-
-def ask(client, model, effort, task, case, max_tokens=DEFAULT_MAX_TOKENS):
+def ask(client, model, effort, task, case, max_tokens):
     labels = ", ".join(task["labels"])
     start = time.time()
     resp = client.messages.create(
@@ -51,7 +47,7 @@ def ask(client, model, effort, task, case, max_tokens=DEFAULT_MAX_TOKENS):
     )
     latency = time.time() - start
     text = "".join(b.text for b in resp.content if b.type == "text")
-    return text, resp.usage.input_tokens, resp.usage.output_tokens, latency
+    return text, resp.usage.input_tokens, resp.usage.output_tokens, latency, resp.stop_reason
 
 
 def p95(values):
@@ -76,23 +72,30 @@ def main():
 
     client = anthropic.Anthropic()
     Path("results").mkdir(exist_ok=True)
-    out_path = Path("results") / f"{task['name']}-{datetime.now():%Y%m%d-%H%M%S}.csv"
+    out_path = Path("results") / f"{task['name']}-{Path(args.config).stem}-{datetime.now():%Y%m%d-%H%M%S}.csv"
     summary = {}
+    total = len(config["models"]) * len(config["efforts"]) * len(cases)
+    done = 0
+    print(f"{task['name']}: {total} calls, max_tokens={config['max_tokens']}, writing {out_path}")
 
     with out_path.open("w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["case", "model", "effort", "expected", "answer", "passed",
-                         "in_tokens", "out_tokens", "latency_s", "cost_usd"])
+                         "in_tokens", "out_tokens", "latency_s", "cost_usd", "stop_reason"])
         for model, price in config["models"].items():
             for effort in config["efforts"]:
                 rows = []
                 for case in cases:
-                    answer, tin, tout, lat = ask(client, model, effort, task, case, config.get("max_tokens", DEFAULT_MAX_TOKENS))
+                    answer, tin, tout, lat, stop = ask(client, model, effort, task, case, config["max_tokens"])
                     cost = (tin * price["input_per_mtok"] + tout * price["output_per_mtok"]) / 1e6
                     ok = grade(answer, case, task)
-                    rows.append((ok, lat, cost))
+                    rows.append((ok, lat, cost, stop))
                     writer.writerow([case["id"], model, effort, case["expected"], answer.strip(),
-                                     ok, tin, tout, round(lat, 2), round(cost, 6)])
+                                     ok, tin, tout, round(lat, 2), round(cost, 6), stop])
+                    f.flush()  # keep partial results if the run dies midway
+                    done += 1
+                    print(f"[{done}/{total}] {model} {effort} {case['id']}: "
+                          f"{'pass' if ok else 'FAIL'} ({answer.strip()[:30]!r}) {tout} tok {lat:.1f}s {stop}")
                 summary[(model, effort)] = rows
 
     bar = task.get("bar", {})
@@ -106,6 +109,9 @@ def main():
                  and cost <= bar.get("max_cost_per_case_usd", float("inf"))
                  and lat <= bar.get("max_p95_latency_s", float("inf")))
         print(f"{model:<20}{effort:<8}{acc:>9.0%}{cost:>10.5f}{lat:>8.1f}  {'yes' if meets else 'no'}")
+        cut = sum(r[3] == "max_tokens" for r in rows)
+        if cut:
+            print(f"{'':<28}warning: {cut} replies cut off by max_tokens")
 
 
 if __name__ == "__main__":

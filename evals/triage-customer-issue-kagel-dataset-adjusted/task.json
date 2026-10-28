@@ -1,0 +1,25 @@
+{
+  "name": "triage-kaggle",
+  "description": "Route an inbound support ticket to one of 10 queues. 50 English tickets sampled from a public multilingual support-ticket dataset (5 per queue, seed 7). Ground truth is the dataset's own queue label, which is noisy.",
+  "instructions": "You route customer support tickets to the correct queue. Choose exactly one label. Reply with only the label, nothing else.",
+  "labels": [
+    "billing_and_payments",
+    "customer_service",
+    "general_inquiry",
+    "permissions_and_access_control",
+    "it_support",
+    "product_support",
+    "returns_and_exchanges",
+    "sales_and_pre_sales",
+    "service_outages_and_maintenance",
+    "technical_support"
+  ],
+  "grader": "exact_match",
+  "bar": {"min_accuracy": 0.60, "max_cost_per_case_usd": 0.002, "max_p95_latency_s": 5},
+  "bar_rationale": {
+    "status": "Assumed starting values for a public benchmark, not a real support queue. See docs/choosing-model-effort-parameters.md section 7.",
+    "min_accuracy": "Set well below the triage eval's 0.90 because the ground truth is the dataset's own noisy queue label (e.g. a delivery delay labelled technical_support), and 10 overlapping queues (it_support vs technical_support vs product_support) leave many tickets with more than one defensible answer. The ceiling is the label agreement, not 1.0. With 50 cases, 30/50 has a 95% range of 0.46-0.72, so treat models within ~10 points as tied.",
+    "max_cost_per_case_usd": "Kept equal to the triage eval so results are comparable: same assumed ~$200/month for ~100k tickets. Tickets here average ~430 characters (~110 tokens) plus 10 labels, so ~200 input tokens: Haiku ~$0.0001, Sonnet ~$0.0024 (just over), Opus ~$0.005 (over).",
+    "max_p95_latency_s": "Same as the triage eval: routing happens before a human picks the ticket up, so nobody waits on it live. Longer tickets add little latency compared with thinking at higher effort."
+  }
+}

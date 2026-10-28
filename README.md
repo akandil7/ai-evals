@@ -1,11 +1,13 @@
 # ai-evals
 
-To objectively answer 'which model and effort level is good enough?' for any given task, I built a lightweight evaluation harness that measures quality, cost, and latency. To keep things practical and cost-effective, the harness restricts scope to 3 core Claude models (excluding Fable) and 2 lower effort settings (low and medium, omitting high, extra, and max), isolating how reduced reasoning depth impacts performance. Running a test case only once per configuration can lead to flaky data. Multi-run averages (or pass@k rates) are essential to ensure a model didn't just get lucky on a single run.
+To objectively answer 'which model and effort level is good enough?' for any given task, I built a lightweight evaluation harness that measures quality, cost, and latency. Since cost is what matter most today, along with accuracy, AI evals is important to learn & apply. To keep things practical and cost-effective, the harness restricts scope to 3 core Claude models (excluding Fable) and 2 lower effort settings (low and medium, omitting high, extra, and max), isolating how reduced reasoning depth impacts performance. Running a test case only once per configuration can lead to flaky data. Multi-run averages (or pass@k rates) are essential to ensure a model didn't just get lucky on a single run.
 
 ### Evaluation Gaps
 1. Task Taxonomy: Group test cases by task type (e.g., summarization vs. structured extraction). A model that excels at one can completely fail at another.
 2. Prompt-Variant Comparison: Test multiple phrasing styles per task. Evaluating a single prompt measures how well a model likes your specific wording, not its true capability, leading to brittle real-world results.
 
+### Lesson learned
+Check docs section for lesson learned, will add the TL;DR here once all is clear.
 
 ## Get Started 
 
@@ -41,3 +43,4 @@ python runner.py evals/triage
 ## Rules
 - Synthetic or anonymized data only: no customer or employer-confidential content.
 - Model names and prices change. Re-check `configs/default.json`.
+

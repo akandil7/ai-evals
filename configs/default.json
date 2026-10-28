@@ -1,6 +1,7 @@
 {
   "._comment": "Please review before using, as models changes, so does input/output tokens price. Here we measure the cost by million token, the equation is simple total price=(input_token * input_price) + (output_token * output_price)",
   "efforts": ["low", "medium"],
+  "max_tokens": 4000,
   "models": {
     "claude-haiku-5-5": {"input_per_mtok": 0.10, "output_per_mtok": 0.50},
     "claude-sonnet-5-5": {"input_per_mtok": 2.00, "output_per_mtok": 10.00},
