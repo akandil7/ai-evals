@@ -15,7 +15,7 @@ Check docs section for lesson learned, will add the TL;DR here once all is clear
 ```
 evals/<task>/task.json     what is tested: instructions, labels, grader, pass bar
 evals/<task>/cases.jsonl   test cases: id, input, expected answer
-configs/default.json       models, effort levels, prices
+configs/<config-name>.json       models, effort levels, prices
 runner.py                  runs an eval across models x efforts and prints a summary
 results/                   CSV outputs of each run (git-ignored)
 docs/                      notes, starting with how to choose model, effort and parameters
